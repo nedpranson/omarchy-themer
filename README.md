@@ -3,7 +3,7 @@
 Loads Omarchy themes into Neovim with support for hot-reloading on theme change.
 
 As there is no simple way to configure Omarchy themes with other Neovim configurations,
-this plugin tries to provide a seamless alternative for integrating Omarchy's custom theme loading and swapping capabilities.
+this plugin provides a seamless alternative for integrating Omarchy's custom theme loading and swapping capabilities.
 
 ## Table of contents
 
@@ -14,14 +14,14 @@ this plugin tries to provide a seamless alternative for integrating Omarchy's cu
 # Installing
 
 > [!NOTE]
-> Only `lazy.nvim` package manager is supported.
+> Only [lazy.nvim](https://github.com/folke/lazy.nvim) plugin manager is supported.
 
-This plugin can be installed either `alongside LazyVim` or through a `custom plugin` that sets the colorscheme via its `opts` table.
+This plugin can be installed either [alongside LazyVim](#installing-alongside-lazyvim) or through a [custom plugin](#installing-with-a-custom-plugin) that sets the colorscheme via its `opts` table.
 
-## Installing alongside LazyVim.
+## Installing alongside LazyVim
 
-Best suited for those already using, or planning to use, [LazyVim](https://github.com/LazyVim/LazyVim);
-it can also function independently without this dependency - look at [Installing using custom plugin](#installing-using-custom-plugin).
+Best suited for those already using (or planning to use) [LazyVim](https://github.com/LazyVim/LazyVim);
+it can also function independently without this dependency - look at [Installing with a custom plugin.](#installing-with-a-custom-plugin)
 
 ```lua
 return {
@@ -30,21 +30,26 @@ return {
     "LazyVim/LazyVim",
   },
   opts = {
+    -- path to linked theme module
+    -- see 'Linking Omarchy Themes' section for more details
     theme_module = "plugins.theme",
-    theme_changed = function ()
-      ApplyTransparency()
+
+    -- optional post-processing hook
+    -- transparency example shown below in 'Post Processing'
+    theme_changed = function()
+      -- ApplyTransparency()
     end,
   },
 }
 ```
 
-## Installing using custom plugin.
+## Installing with a custom plugin
 
 Normally Omarchy relies on [LazyVim](https://github.com/LazyVim/LazyVim) to select Neovim themes, so LazyVim is required.
 However, its presence can be emulated by using `dir` and `name` options in lazy’s [plugin specification](https://lazy.folke.io/spec#spec-source),
 allowing you to point to a local directory and provide a custom plugin as a stand-in.
 
-Using [LightVim](https://github.com/nedaras/LightVim) is recommended for this purpose.
+Installing [LightVim](https://github.com/nedaras/LightVim) is recommended, but any minimal plugin stub works.
 
 ```lua
 return {
@@ -53,9 +58,14 @@ return {
     { dir = "path/to/custom/plugin", name = "LazyVim" },
   },
   opts = {
+    -- path to linked theme module
+    -- see 'Linking Omarchy Themes' section for more details
     theme_module = "plugins.theme",
-    theme_changed = function ()
-      ApplyTransparency()
+
+    -- optional post-processing hook
+    -- transparency example shown below in 'Post Processing'
+    theme_changed = function()
+      -- ApplyTransparency()
     end,
   },
 }
@@ -69,21 +79,21 @@ ensuring that it is recognized and loaded as part of the plugin specification.
 The simplest way to achieve this is creating a symbolic link:
 
 ```sh
-# Link it to your lazy.nvim plugin module direcory
-ln -s ~/.config/omarchy/current/theme/neovim.lua ~/.config/nvim/lua/plugins/theme.lua
+# link it to your lazy.nvim plugin module directory
+ln -s ~/.config/omarchy/current/theme/neovim.lua \
+      ~/.config/nvim/lua/plugins/theme.lua
 ```
+
+After linkage, don't forget to update `theme_module` inside the plugin's `opts`.
 
 # Post Processing
 
 Post processing applies additional adjustments after the theme is loaded, and here it can be used to configure transparency across Neovim and its plugins.
 
-Here is an example that makes common elements transparent — don’t forget to call it via `theme_changed` callback plugin's `opts`:
-
-<details>
-<summary><code>~/.config/nvim/plugin/after/transparency.lua</code></summary>
-<br/>
+Here is an example that makes common elements transparent — don’t forget to call it via `theme_changed` callback inside plugin's `opts`:
 
 ```lua
+-- ~/.config/nvim/plugin/after/transparency.lua
 function ApplyTransparency()
   -- transparent background
   vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
