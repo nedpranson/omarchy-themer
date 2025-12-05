@@ -25,7 +25,7 @@ it can also function independently without this dependency - look at [Installing
 
 ```lua
 return {
-  "nedaras/omarchy-themer",
+  "nedpranson/omarchy-themer",
   dependencies = {
     "LazyVim/LazyVim",
   },
@@ -49,11 +49,11 @@ Normally Omarchy relies on [LazyVim](https://github.com/LazyVim/LazyVim) to sele
 However, its presence can be emulated by using `dir` and `name` options in lazy’s [plugin specification](https://lazy.folke.io/spec#spec-source),
 allowing you to point to a local directory and provide a custom plugin as a stand-in.
 
-Installing [LightVim](https://github.com/nedaras/LightVim) is recommended, but any minimal plugin stub works.
+Installing [LightVim](https://github.com/nedpranson/LightVim) is recommended, but any minimal plugin stub works.
 
 ```lua
 return {
-  "nedaras/omarchy-themer",
+  "nedpranson/omarchy-themer",
   dependencies = {
     { dir = "path/to/custom/plugin", name = "LazyVim" },
   },
