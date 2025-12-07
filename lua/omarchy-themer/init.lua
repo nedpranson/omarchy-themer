@@ -33,8 +33,9 @@ local function lazy_reload()
         vim.cmd("syntax reset")
       end
 
-      -- Reset background to default so colorscheme can set it properly (light themes will set to light)
+      -- Reset some opts to default so colorscheme can set it properly
       vim.o.background = "dark"
+      vim.o.termguicolors = true
 
       -- Install missing plugins (can happen when loading new colorscheme)
       require("lazy.core.loader").install_missing()
