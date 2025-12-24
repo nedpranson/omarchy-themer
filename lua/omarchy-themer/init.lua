@@ -34,38 +34,38 @@ local function lazy_reload()
 
   for _, spec in ipairs(theme_spec) do
     if spec[1] == "LazyVim/LazyVim" and spec.opts and spec.opts.colorscheme then
-      local plugins = vim.tbl_keys(require("lazy.core.config").plugins)
-
       -- Clear all highlight groups before applying new theme
       vim.cmd("highlight clear")
       if vim.fn.exists("syntax_on") then
         vim.cmd("syntax reset")
       end
 
+      -- Install missing plugins (can happen when loading new colorscheme)
+      require("lazy.core.loader").install_missing()
+
+      local plugins = vim.tbl_keys(require("lazy.core.config").plugins)
+
+      -- Load every plugin including new colorscheme 
+      require("lazy.core.loader").load(plugins, { cmd = "Lazy load" }, { force = false })
+
+      -- Find the theme plugin and reload it
+      local theme_plugin_name = nil
+      for _, spec in ipairs(theme_spec) do
+        if spec[1] and spec[1] ~= "LazyVim/LazyVim" then
+          theme_plugin_name = spec.name or require("lazy.core.plugin").Spec.get_name(spec[1])
+          break
+        end
+      end
+
       -- Reset some opts to default so colorscheme can set it properly
       vim.o.background = "dark"
       vim.o.termguicolors = true
 
-      if spec.opts.colorscheme == require("lazyvim.config").colorscheme then
-        -- Find the theme plugin and reload it
-        local theme_plugin_name = nil
-        for _, spec in ipairs(theme_spec) do
-          if spec[1] and spec[1] ~= "LazyVim/LazyVim" then
-            theme_plugin_name = spec.name or require("lazy.core.plugin").Spec.get_name(spec[1])
-            break
-          end
-        end
-
-        if theme_plugin_name then
-          require("lazy.core.loader").reload(theme_plugin_name)
-        end
+      -- Reload theme plugin and LazyVim, so new theme would apply
+      if theme_plugin_name then
+        require("lazy.core.loader").reload(theme_plugin_name)
       end
 
-      -- Install missing plugins (can happen when loading new colorscheme)
-      require("lazy.core.loader").install_missing()
-
-      -- Load every plugin including new colorscheme and reload LazyVim, so new theme would apply
-      require("lazy.core.loader").load(plugins, { cmd = "Lazy load" }, { force = false })
       require("lazy.core.loader").reload("LazyVim")
 
       pcall(options.theme_changed)
