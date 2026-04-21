@@ -17,7 +17,7 @@ Install using the native Neovim package manager:
 
 ```lua
 vim.pack.add({
-    { "https://github.com/nedpranson/omarchy-themer" },
+    "https://github.com/nedpranson/omarchy-themer",
 })
 
 require("omarchy-themer").setup()
