@@ -76,6 +76,15 @@ local function load_theme(path)
         end
     end
 
+    -- Reset highlights and some opts so colorscheme can set them properly
+    vim.cmd("highlight clear")
+    if vim.fn.exists("syntax_on") then
+        vim.cmd("syntax reset")
+    end
+
+    vim.o.background = "dark"
+    vim.o.termguicolors = true
+
     if type(theme) == "function" then
         theme()
     else
